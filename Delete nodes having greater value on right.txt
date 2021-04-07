@@ -1,0 +1,37 @@
+Node *compute(Node *head)
+{
+    Node*p=head;
+    Node*q=NULL;
+    if(!head)
+    return head;
+    if(!head->next)
+    return head;
+    while(p->next && p)
+    {  
+        if(p->data<p->next->data)
+        {
+            if(p==head)
+            {
+                head=head->next;
+                delete (p);
+                p=head;
+            }
+            else
+            {   q=head;
+               while(q->next!=p)
+               q=q->next;
+               q->next=p->next;
+               delete(p);
+               p=q;
+            }
+        }
+        else
+        {   
+            q=p;
+            p=p->next;
+        }
+    }
+    return head;
+}
+// case causing segmentation earlier
+3->6->3->7

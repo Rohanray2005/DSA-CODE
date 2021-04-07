@@ -1,0 +1,30 @@
+int celebrity(vector<vector<int> >& M, int n) {
+        stack<int>s;
+        int flag=1;
+        for(int i=0;i<n;i++)
+        s.push(i);
+        int x,y;
+         while(s.size()>1)
+        {
+            x=s.top();
+            s.pop();
+            y=s.top();
+            s.pop();
+            if(M[x][y]==1)
+            s.push(y);
+            else if(M[y][x]==1)
+            s.push(x);
+        }
+        if(s.empty())
+        return -1;
+         int z=s.top();
+         
+        for(int i=0;i<n;i++)
+        {   
+            if(M[z][i]==1)
+            return -1;
+            if(M[i][z]==0 && z!=i)
+            return -1;
+        }
+        return z;
+    }

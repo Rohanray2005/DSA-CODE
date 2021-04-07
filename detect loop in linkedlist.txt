@@ -1,0 +1,28 @@
+bool detect(Node* head)
+{
+	Node*p=head;
+	Node*q=head;
+	while(p && q && q->next)
+	{
+		p=p->next;
+		q-q->next->next;
+		if(p==q)
+		return true;
+	}
+	q=head; // deletes loop
+	while(p->next!=q)
+	{
+		p=p->next;
+		q=q->next
+	}
+	q=head; // detect start of  loop
+	while(p!=q)
+	{
+		p=p->next;
+		q=q->next
+	}
+	p->next=NULL;
+
+	return false;	
+}
+

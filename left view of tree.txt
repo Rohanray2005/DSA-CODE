@@ -1,0 +1,22 @@
+void printLeftview(bool *levels, Node *root, int curr,vector<int>&v)
+{
+    if(!root)
+        return;
+    
+    if(levels[curr]==false)
+    {
+        levels[curr] = true;
+        v.push_back(root->data);
+        
+    }
+    printLeftview(levels,root->left,curr+1,v);    
+    printLeftview(levels,root->right,curr+1,v);   //For right view just change the order of left and right call
+}
+
+vector<int> leftView(Node *root)
+{
+   vector<int>v;
+   bool levels[202] = {false};
+   printLeftview(levels,root,0,v);
+   return v;
+}
