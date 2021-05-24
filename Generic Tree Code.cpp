@@ -291,6 +291,39 @@ int lca(Node*root,int n1,int n2)
     return p1[i-1];
 }
 
+bool issimilar(Node*root1,Node*root2)
+{
+    if(root1==NULL && root2==NULL)
+    return true;
+    else if(root1==NULL || root2==NULL)
+    return false;
+    if(root1->v.size()!=root2->v.size())
+    return false;
+    
+    bool ans=true;
+    for(int i=0;i<root1->v.size();i++)
+    {
+        ans=ans&(issimilar(root1->v[i],root2->v[i]));
+    }
+    return ans;
+}
+int distance_nodes(Node*root,int n1,int n2)
+{
+     vector<int>p1,p2;
+    p1=find_path(root,n1);
+    p2=find_path(root,n2);
+    
+    int i;
+    for( i=0;i<p1.size()&&i<p2.size();i++)
+    {
+        if(p1[i]!=p2[i])
+        break;
+        
+    }
+    int count1=p1.size()-i,count2=p2.size()-i;
+    
+    return count1+count2;
+}
 int main()
 {
     Node*root;
@@ -301,7 +334,6 @@ int main()
     cin>>arr[i];
     root=input_pep(arr,n);
     cin>>k1>>k2;
-    int c=lca(root,k1,k2);
-    cout<<c;
+    cout<<distance_nodes(root,k1,k2);
     return 0;
 }
