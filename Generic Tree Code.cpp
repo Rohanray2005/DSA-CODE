@@ -22,7 +22,7 @@ void printtree(Node*root)
     {
         cout<<(root->v[i]->data)<<", ";
     }
-    cout<<".\n";
+    cout<<".";
     for(int i=0;i<root->v.size();i++)
     {
         printtree(root->v[i]);
@@ -166,7 +166,7 @@ void level_order_zigzag(Node*root)
         {
             s1.swap(s2);
             level++;
-            cout<<"\n";
+            cout<<" ";
         }
     }
 }
@@ -307,33 +307,163 @@ bool issimilar(Node*root1,Node*root2)
     }
     return ans;
 }
-int distance_nodes(Node*root,int n1,int n2)
+
+bool ismirror(Node*root1,Node*root2)
 {
-     vector<int>p1,p2;
-    p1=find_path(root,n1);
-    p2=find_path(root,n2);
-    
-    int i;
-    for( i=0;i<p1.size()&&i<p2.size();i++)
+    if(root1==NULL && root2==NULL)
+    return true;
+    else if(root1==NULL || root2==NULL)
+    return false;
+    if(root1->v.size()!=root2->v.size())
+    return false;
+    bool ans=true;
+    for(int i=0;i<root1->v.size();i++)
     {
-        if(p1[i]!=p2[i])
-        break;
-        
+        ans=ans&(issimilar(root1->v[i],root2->v[root2->v.size()-1-i]));
     }
-    int count1=p1.size()-i,count2=p2.size()-i;
-    
-    return count1+count2;
+    return ans;
 }
+
+bool issymmetric(Node*root1)
+{
+    return ismirror(root1,root1);
+}
+
+int pre=-1,succ=-1,s=0;
+void find_ps(Node*root,int k)
+{
+    if(s==0)
+    {
+        if(root->data==k)
+        s=1;
+        else
+        pre=root->data;
+    }
+    else if(s==1)
+    {
+        succ=root->data;
+        s=2;
+    }
+    for(int i=0;i<root->v.size();i++)
+    find_ps(root->v[i],k);
+}
+
+int ceil_p=INT_MAX,floor_p=INT_MIN;
+
+void yetanotherfind(Node*root,int k)
+{
+    if(root->data>k && ceil_p>root->data)
+    {
+        ceil_p=root->data;
+    }
+    else if(root->data<k && floor_p<root->data)
+    {
+        floor_p=root->data;
+    }
+    for(int i=0;i<root->v.size();i++)
+    yetanotherfind(root->v[i],k);
+}
+
+priority_queue <int, vector<int>, greater<int> > pq;
+void kthlargest(Node*root,int k)
+{
+    if(pq.size()<k)
+    {
+        pq.push(root->data);
+    }
+    else
+    {
+        if(pq.top()<root->data)
+        {
+            pq.pop();
+            pq.push(root->data);
+        }
+    }
+    for(int i=0;i<root->v.size();i++)
+    kthlargest(root->v[i],k);
+}
+
+Node*max_v;
+int max_sum=0;
+int max_sum_subtree(Node*root)
+{
+    int sum=0;
+    
+    for(int i=0;i<root->v.size();i++)
+    {   
+        int temp;
+        temp=max_sum_subtree(root->v[i]);
+        sum+=temp;
+    }
+    sum+=root->data;
+    if(sum>max_sum)
+    {
+        max_v=root;
+        max_sum=sum;
+    }
+    return sum;
+}
+priority_queue <int, vector<int>, greater<int> > dpq;
+int diameter(Node*root)
+{   
+    if(root->v.size()==0)return 0;
+    
+    for(int i=0;i<root->v.size();i++)
+    {
+        int x=height(root->v[i]);
+        if(dpq.size()<2)
+        dpq.push(x);
+        else if(dpq.top()<x)
+        {   
+            dpq.pop();
+            dpq.push(x);
+        }
+    }
+    int y1=dpq.top();
+    dpq.pop();
+    int y2=dpq.top();
+    dpq.pop();
+    int max_d=0;
+    for(int i=0;i<root->v.size();i++)
+    {
+        max_d=(max_d,diameter(root->v[i]));
+    }
+    max_d=max(max_d,y1+y2);
+}
+int dia=0;
+int alternate_diameter(Node*root)
+{
+    int h=-1,sh=-1;
+    
+    for(int i=0;i<root->v.size();i++)
+    {
+        int he=alternate_diameter(root->v[i]);
+        if(he>h)
+        {   
+            sh=h;
+            h=he;
+        }
+        else if(he>sh)
+        {
+            sh=he;
+        }
+    }
+    if(h+sh+2>dia)
+    {
+        dia=h+sh+2;
+    }
+    h+=1;
+    return h;
+}
+
 int main()
 {
-    Node*root;
-    int n,k1,k2;
+    Node*root1;
+    int n;
     cin>>n;
     int arr[n];
     for(int i=0;i<n;i++)
     cin>>arr[i];
-    root=input_pep(arr,n);
-    cin>>k1>>k2;
-    cout<<distance_nodes(root,k1,k2);
+    root1=input_pep(arr,n);
     return 0;
 }
