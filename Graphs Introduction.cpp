@@ -137,6 +137,43 @@ vector<int> getpath(int **edges,int n,int start,int end)
 
 }
 
+vector<int>getpath_bfs(int **edges,int n,int start,int end)
+{
+    vector<int>ans;
+    map<int,int>m;
+    queue<int>q;
+    q.push(start);
+    visit[start]=true;
+    while(!q.empty())
+    {
+        int curr=q.front();
+        q.pop();
+        if(curr==end)
+            break;
+        for(int i=0;i<n;i++)
+        {
+            if(visit[i]==true)
+            continue;
+            if(edges[curr][i]==1 && !visit[i])
+            {
+                q.push(i);
+                m[i]=curr;
+                visit[i]=true;
+            }
+        }
+    }
+    ans.push_back(end);
+    int x=m[end];
+    ans.push_back(x);
+    while(x!=0)
+    {
+        x=m[x];
+        ans.push_back(x);
+    }
+    reverse(ans.begin(),ans.end());
+    return ans;
+}
+
 
 int main()
 {
