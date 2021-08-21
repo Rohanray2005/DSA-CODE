@@ -50,22 +50,36 @@ void getconnected(vector<vector<int>>edges,int n,vector<bool>&visited,vector<vec
         if(temp.size()>0)v.push_back(temp);
     }
 }
+bool modified_dfs(vector<vector<int>>edges,int n,int sv,int parent,vector<bool>&visited){
+    visited[sv]=true;
+    for(int i=0;i<n;i++){
+        if(visited[i]==true && edges[sv][i]>0 && parent!=i)return true;
+        if(visited[i]==false && edges[sv][i]){
+            return modified_dfs(edges,n,i,sv,visited);
+        }
+    }
+    return false;
+}
+
+bool iscycle(vector<vector<int>>edges,int n){
+    vector<bool>visited(n,false);
+    int ans=false;
+    for(int i=0;i<n;i++){
+        if(visited[i]==false)
+        ans|=modified_dfs(edges,n,i,-1,visited);
+    }
+    return ans;
+}
 
 int main()
 {   
-    #ifndef ONLINE_JUDGE
-        freopen("input.txt","r",stdin);
-        freopen("output.txt","w",stdout);
-    #endif  
-    int n,e;
-    cin>>n>>e;//Taking input of no. of nodes and edges
+    int n;
+    cin>>n;//Taking input of no. of nodes
     vector<vector<int>>edges(n,vector<int>(n));//2-d matrix
-    //Taking inputs of 
-    for(int i=0;i<e;i++){
-    	int f,s;
-    	cin>>f>>s;
-    	edges[f][s]=1;
-    	edges[s][f]=1;
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            cin>>edges[i][j];
+        }
     }
     vector<vector<int>>components;
     if(isBarpetite(edges,n,0)){
@@ -97,6 +111,13 @@ int main()
             }
             cout<<"\n";
         }	
+    }
+    if(components.size()>1){
+        cout<<"Graph is not a tree\n";//Graph is disconnected therefore not a tree
+    }
+    else{
+        if(iscycle(edges,n))cout<<"Graph is not a tree\n";
+        else cout<<"Graph is a tree\n";
     }
     return 0;
 }
